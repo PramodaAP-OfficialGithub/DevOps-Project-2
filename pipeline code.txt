@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            agent{ 
+                label 'master'
+            }
+            steps {
+                script {
+                    // Checkout code from Git
+                    git 'https://github.com/Pramoda-techrace/website.git'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            agent{ 
+                label 'master'
+            }
+            steps {
+                script {
+                    // Build Docker image using Dockerfile
+                    sh 'docker build -t pramodaap987/project2 .'
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            agent{ 
+                label 'master'
+            }
+            steps {
+                script {
+                    // Push Docker image to Docker Hub
+                    sh 'docker push pramodaap987/project2'
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            agent{ 
+                label 'master'
+            }
+            steps {
+                script {
+                    // Deploy to Kubernetes using kubectl
+                    sh 'microk8s kubectl apply -f deploy.yaml'
+                }
+            }
+        }
+    }
+}
